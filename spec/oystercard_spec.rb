@@ -28,4 +28,15 @@ describe Oystercard do
     card.topup(20)
     expect{ card.deduct(1)}.to change{ card.balance }.by (-1)
   end
+
+  it 'is not in journey initialy' do
+    expect(card).not_to be_in_journey
+  end
+
+  it "touch in method- marking the card as being in use" do
+    card = Oystercard.new
+    card.touchin
+    expect(card).to be_in_journey
+  end
+
 end
