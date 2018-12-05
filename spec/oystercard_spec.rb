@@ -21,13 +21,13 @@ describe Oystercard do
   end
 
 
-  it { is_expected.to respond_to(:deduct).with(1).argument }
+  # it { is_expected.to respond_to(:deduct) }
 
-  it 'fair deducted from my card' do
-    card = Oystercard.new
-    card.topup(20)
-    expect{ card.deduct(1)}.to change{ card.balance }.by (-1)
-  end
+  # it 'fair deducted from my card' do
+  #   card = Oystercard.new
+  #   card.topup(20)
+  #   expect{ card.deduct}.to change{ card.balance }.by (-Oystercard::MINIMUM_BALANCE)
+  # end
 
   it 'is not in journey initialy' do
     card = Oystercard.new
@@ -48,12 +48,18 @@ describe Oystercard do
     end
   end
 
-  it "touch out method, marking card as no longer being in use" do
-    card = Oystercard.new
-    card.topup(2)
-    card.touchin
-    card.touchout
-    expect(card).not_to be_in_journey
-  end
+  context "#touchout" do
 
+    it "touch out method, marking card as no lslonger being in use" do
+      card = Oystercard.new
+      card.topup(2)
+      card.touchin
+      card.touchout
+      expect(card).not_to be_in_journey
+    end
+
+    it "Deducts minimum balance (1) from card when touchout" do
+      expect{ subject.touchout }.to change{subject.balance}.by(-Oystercard::MINIMUM_BALANCE)
+    end
+  end
 end

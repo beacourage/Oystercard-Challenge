@@ -16,10 +16,6 @@ class Oystercard
     @balance += amount
   end
 
-  def deduct(amount)
-    @balance -= amount
-  end
-
   def in_journey?
     @cardstate == true
   end
@@ -30,10 +26,19 @@ class Oystercard
   end
 
   def touchout
+      deduct
       @cardstate = false
   end
 
+  private
+
+  def deduct
+    @balance -= MINIMUM_BALANCE
+  end
+
 end
+
+#cannot call deduct on its own because its private, can only call it within the context of touchout.
 
 # maximum_balance = Oystercard::MAXIMUM_BALANCE
 # Access a constant from outside the class
