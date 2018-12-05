@@ -5,20 +5,20 @@ describe Oystercard do
     expect(subject.balance).to eq(0)
   end
 
-  describe 'respinding to topup method' do
+  describe 'responding to topup method' do
     it { is_expected.to respond_to(:topup).with(1).argument }
   end
 
   it 'adding money to the card, topping up balance' do
-   expect{ subject.topup(1)}.to change{ subject.balance }.by(1)
- end
+    expect{ subject.topup(1)}.to change{ subject.balance }.by(1)
+  end
 
- it 'want maximum card limit, raises an error if the maximum balance is exceeded' do
-   maximum_balance = Oystercard::MAXIMUM_BALANCE
-   card = Oystercard.new
-   card.topup(maximum_balance)
-   expect{card.topup(1)}.to raise_error "Maximum balance of #{maximum_balance} exceeded"
- end
+  it 'want maximum card limit, raises an error if the maximum balance is exceeded' do
+    maximum_balance = Oystercard::MAXIMUM_BALANCE
+    card = Oystercard.new
+    card.topup(maximum_balance)
+    expect{card.topup(1)}.to raise_error "Maximum balance of #{maximum_balance} exceeded"
+  end
 
 
   it { is_expected.to respond_to(:deduct).with(1).argument }
@@ -34,14 +34,23 @@ describe Oystercard do
     expect(card).not_to be_in_journey
   end
 
-  it "touch in method- marking the card as being in use" do
-    card = Oystercard.new
-    card.touchin
-    expect(card).to be_in_journey
+  context "#touchin" do
+
+    it "touch in method- marking the card as being in use" do
+      card = Oystercard.new
+      card.topup(3)
+      card.touchin
+      expect(card).to be_in_journey
+    end
+
+    it "should throws an error if below minimum balance" do
+      expect{ subject.touchin }.to raise_error("Unable to touch in due to balance")
+    end
   end
 
   it "touch out method, marking card as no longer being in use" do
     card = Oystercard.new
+    card.topup(2)
     card.touchin
     card.touchout
     expect(card).not_to be_in_journey
