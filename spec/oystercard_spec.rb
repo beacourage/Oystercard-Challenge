@@ -30,6 +30,7 @@ describe Oystercard do
   end
 
   it 'is not in journey initialy' do
+    card = Oystercard.new
     expect(card).not_to be_in_journey
   end
 
@@ -37,6 +38,13 @@ describe Oystercard do
     card = Oystercard.new
     card.touchin
     expect(card).to be_in_journey
+  end
+
+  it "touch out method, marking card as no longer being in use" do
+    card = Oystercard.new
+    card.touchin
+    card.touchout
+    expect(card).not_to be_in_journey
   end
 
 end

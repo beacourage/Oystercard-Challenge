@@ -7,6 +7,7 @@ class Oystercard
 
   def initialize
     @balance = 0
+    @cardstate = false
   end
 
   def topup(amount)
@@ -21,11 +22,23 @@ class Oystercard
 
   def in_journey?
     # @cardstate
-    false
+    @cardstate == true
   end
 
+  def touchin
+    if @cardstate == false
+      @cardstate = true
+    end
+  end
+
+  def  touchout
+    if @cardstate == true
+      @cardstate = false
+    end
+  end
 
 end
 
 # maximum_balance = Oystercard::MAXIMUM_BALANCE
 # Access a constant from outside the class
+# card state, is whether or not you are using your card.
