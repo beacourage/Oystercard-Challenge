@@ -1,13 +1,12 @@
 class Oystercard
 
-  attr_reader :balance
+  attr_reader :balance, :entry_station
 
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
 
   def initialize
     @balance = 0
-    @cardstate = false
   end
 
   def topup(amount)
@@ -16,19 +15,24 @@ class Oystercard
     @balance += amount
   end
 
-  # def in_journey?
-  #   @cardstate == true
-  # end
+  def in_journey?
+    if @entry_station == nil
+      false
+    else
+      true
+    end
+  end
 
-  def touchin
+  def touchin(station)
+    @entry_station = station
     fail "Unable to touch in due to balance" if @balance < MINIMUM_BALANCE
-    @cardstate = true
   end
 
   def touchout
       deduct
-      @cardstate = false
+      @entry_station = nil
   end
+
 
   private
 
@@ -37,6 +41,10 @@ class Oystercard
   end
 
 end
+
+
+# replaced cardstate with entry entry_station
+
 
 #cannot call deduct on its own because its private, can only call it within the context of touchout.
 

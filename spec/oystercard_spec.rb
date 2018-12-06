@@ -1,6 +1,9 @@
 require 'oystercard'
 
 describe Oystercard do
+
+ let(:station){ double :station }
+
   it 'has a balance of zero' do
     expect(subject.balance).to eq(0)
   end
@@ -20,15 +23,6 @@ describe Oystercard do
     expect{card.topup(1)}.to raise_error "Maximum balance of #{maximum_balance} exceeded"
   end
 
-
-  # it { is_expected.to respond_to(:deduct) }
-
-  # it 'fair deducted from my card' do
-  #   card = Oystercard.new
-  #   card.topup(20)
-  #   expect{ card.deduct}.to change{ card.balance }.by (-Oystercard::MINIMUM_BALANCE)
-  # end
-
   it 'is not in journey initialy' do
     card = Oystercard.new
     expect(card).not_to be_in_journey
@@ -39,21 +33,30 @@ describe Oystercard do
     it "touch in method- marking the card as being in use" do
       card = Oystercard.new
       card.topup(3)
-      card.touchin
+      card.touchin(station)
       expect(card).to be_in_journey
     end
 
     it "should throws an error if below minimum balance" do
-      expect{ subject.touchin }.to raise_error("Unable to touch in due to balance")
+      expect{ subject.touchin(station) }.to raise_error("Unable to touch in due to balance")
+    end
+
+    # let(:station){ double :station }
+
+    it "remembers the entry station after touchin" do
+      card = Oystercard.new
+      card.topup(2)
+      card.touchin(station)
+      expect( card.entry_station ).to eq station
     end
   end
 
   context "#touchout" do
 
-    it "touch out method, marking card as no lslonger being in use" do
+    it "touch out method, marking card as no longer being in use" do
       card = Oystercard.new
       card.topup(2)
-      card.touchin
+      card.touchin(station)
       card.touchout
       expect(card).not_to be_in_journey
     end
