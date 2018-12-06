@@ -74,9 +74,20 @@ describe Oystercard do
       expect(card.exit_station).to eq exit_station
     end
 
-    # it "records previous trips and displays them under previous_trips" do
-    #   card = Oystercard.new
-    #   expect{ card.touchout }.to change{@previous_trips}.by(entry_station)
-    # end
   end
+
+  it "card has empty list of journeys initially" do
+    card = Oystercard.new
+    expect(@journeys).to eq nil
+  end
+
+  it "one journey adds entry and exit stations to the journey array" do
+    card = Oystercard.new
+    card.topup(2)
+    card.touchin(entry_station)
+    card.touchout(exit_station)
+    expect(card.journeys).to eq [{entry_station => exit_station}]
+  end
+
+
 end
