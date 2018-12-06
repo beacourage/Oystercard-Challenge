@@ -1,6 +1,6 @@
 class Oystercard
 
-  attr_reader :balance, :entry_station
+  attr_reader :balance, :entry_station, :exit_station
 
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
@@ -23,14 +23,15 @@ class Oystercard
     end
   end
 
-  def touchin(station)
-    @entry_station = station
+  def touchin(entry_station)
+    @entry_station = entry_station
     fail "Unable to touch in due to balance" if @balance < MINIMUM_BALANCE
   end
 
-  def touchout
-      deduct
-      @entry_station = nil
+  def touchout(exit_station)
+    @exit_station = exit_station
+    deduct
+    @entry_station = nil
   end
 
 

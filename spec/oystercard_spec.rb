@@ -2,7 +2,8 @@ require 'oystercard'
 
 describe Oystercard do
 
- let(:station){ double :station }
+ let(:entry_station) { double :station}
+ let(:exit_station) { double :station}
 
   it 'has a balance of zero' do
     expect(subject.balance).to eq(0)
@@ -33,12 +34,12 @@ describe Oystercard do
     it "touch in method- marking the card as being in use" do
       card = Oystercard.new
       card.topup(3)
-      card.touchin(station)
+      card.touchin(entry_station)
       expect(card).to be_in_journey
     end
 
     it "should throws an error if below minimum balance" do
-      expect{ subject.touchin(station) }.to raise_error("Unable to touch in due to balance")
+      expect{ subject.touchin(entry_station) }.to raise_error("Unable to touch in due to balance")
     end
 
     # let(:station){ double :station }
@@ -46,8 +47,8 @@ describe Oystercard do
     it "remembers the entry station after touchin" do
       card = Oystercard.new
       card.topup(2)
-      card.touchin(station)
-      expect( card.entry_station ).to eq station
+      card.touchin(entry_station)
+      expect( card.entry_station ).to eq entry_station
     end
   end
 
@@ -56,13 +57,26 @@ describe Oystercard do
     it "touch out method, marking card as no longer being in use" do
       card = Oystercard.new
       card.topup(2)
-      card.touchin(station)
-      card.touchout
+      card.touchin(entry_station)
+      card.touchout(exit_station)
       expect(card).not_to be_in_journey
     end
 
     it "Deducts minimum balance (1) from card when touchout" do
-      expect{ subject.touchout }.to change{subject.balance}.by(-Oystercard::MINIMUM_BALANCE)
+      expect{ subject.touchout(exit_station) }.to change{subject.balance}.by(-Oystercard::MINIMUM_BALANCE)
     end
+
+    it "creates an exit station in order for it to be stored" do
+      card = Oystercard.new
+      card.topup(2)
+      card.touchin(entry_station)
+      card.touchout(exit_station)
+      expect(card.exit_station).to eq exit_station
+    end
+
+    # it "records previous trips and displays them under previous_trips" do
+    #   card = Oystercard.new
+    #   expect{ card.touchout }.to change{@previous_trips}.by(entry_station)
+    # end
   end
 end
